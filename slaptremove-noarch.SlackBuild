@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# SlackBuild para 'slapt-remove'
+# Construcción del paquete para el script slapt-remove
+
+
+PRGNAM=slaptremove
+VERSION=${VERSION:-1.0}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_SBo}
+NAME=slaptremove
+CATEGORY=system
+SOURCE=${BUILD}.tar.gz
+TARBALL=${SOURCE}
+DOWNLOAD_x86_64=$DOWNLOAD
+MAINTAINER=joniwillnotmantain
+HOMEPAGE=https://example.com/
+PKG=pkg
+REQUIRES=bash coreutils
+
+# Proceso de preparación
+set -e
+
+# Asegúrate de que estamos en el directorio correcto
+cd "$(dirname "$0")"
+
+# Crear el archivo de salida del paquete
+mkdir -p $PKG
+
+# Crear el directorio donde se instalará el script
+install -d $PKG/usr/bin
+
+# Instalar el script slapt-remove
+install -m 755 slaptremove $PKG/usr/bin/
+
+# Crear el directorio para el script doinst.sh
+install -d $PKG/usr/doc/${NAME}-${VERSION}
+
+# Crear el archivo 'doinst.sh' para hacer tareas post-instalación
+cat <<EOF > $PKG/usr/doc/${NAME}-${VERSION}/doinst.sh
+#!/bin/bash
+
+# Este script será ejecutado después de la instalación del paquete
+# Asegúrate de darle permisos de ejecución a este script si no los tiene.
+# Si tu paquete incluye algún archivo que requiera ser copiado o configurado, hazlo aquí.
+EOF
+
+# Crear un archivo de manifiesto que indique que este paquete contiene el archivo doinst.sh
+echo "Este paquete contiene un script post-instalación en usr/doc/${NAME}-${VERSION}/doinst.sh" > $PKG/usr/doc/${NAME}-${VERSION}/manifest.txt
+
+# Empaquetar todo en un .tgz
+cd $PKG
+makepkg -l y -c y ../${BUILD}.tgz
+cd ..
+
+# Limpiar después de la construcción
+rm -rf $PKG
+
+echo "Paquete ${BUILD}.tgz creado correctamente."
